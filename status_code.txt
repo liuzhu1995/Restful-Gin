@@ -1,0 +1,44 @@
+StatusOK       = StatusCode(200) // 200 OK
+    StatusCreated  = StatusCode(201) // 201 Created
+    StatusAccepted = StatusCode(202) // 202 Accepted
+    StatusNoContent  = StatusCode(204) // 204 No Content
+    StatusResetContent = StatusCode(205) // 205 Reset Content
+    StatusPartialContent = StatusCode(206) // 206 Partial Content
+
+    StatusMultipleChoices   = StatusCode(300) // 300 Multiple Choices
+    StatusMovedPermanently  = StatusCode(301) // 301 Moved Permanently
+    StatusFound             = StatusCode(302) // 302 Found
+    StatusSeeOther          = StatusCode(303) // 303 See Other
+    StatusNotModified        = StatusCode(304) // 304 Not Modified
+    StatusUseProxy          = StatusCode(305) // 305 Use Proxy
+    StatusTemporaryRedirect = StatusCode(307) // 307 Temporary Redirect
+
+    StatusBadRequest                   = StatusCode(400) // 400 Bad Request
+    StatusUnauthorized                 = StatusCode(401) // 401 Unauthorized
+    StatusPaymentRequired              = StatusCode(402) // 402 Payment Required
+    StatusForbidden                    = StatusCode(403) // 403 Forbidden
+    StatusNotFound                     = StatusCode(404) // 404 Not Found
+    StatusMethodNotAllowed             = StatusCode(405) // 405 Method Not Allowed
+    StatusNotAcceptable                = StatusCode(406) // 406 Not Acceptable
+    StatusProxyAuthRequired            = StatusCode(407) // 407 Proxy Authentication Required
+    StatusRequestTimeout               = StatusCode(408) // 408 Request Timeout
+    StatusConflict                     = StatusCode(409) // 409 Conflict
+    StatusGone                         = StatusCode(410) // 410 Gone
+    StatusLengthRequired               = StatusCode(411) // 411 Length Required
+    StatusPreconditionFailed           = StatusCode(412) // 412 Precondition Failed
+    StatusRequestEntityTooLarge        = StatusCode(413) // 413 Request Entity Too Large
+    StatusRequestURITooLong            = StatusCode(414) // 414 Request-URI Too Long
+    StatusUnsupportedMediaType         = StatusCode(415) // 415 Unsupported Media Type
+    StatusRequestedRangeNotSatisfiable = StatusCode(416) // 416 Requested Range Not Satisfiable
+    StatusExpectationFailed            = StatusCode(417) // 417 Expectation Failed
+
+    StatusInternalServerError           = StatusCode(500) // 500 Internal Server Error
+    StatusNotImplemented               = StatusCode(501) // 501 Not Implemented
+    StatusBadGateway                   = StatusCode(502) // 502 Bad Gateway
+    StatusServiceUnavailable           = StatusCode(503) // 503 Service Unavailable
+    StatusGatewayTimeout               = StatusCode(504) // 504 Gateway Timeout
+    StatusHTTPVersionNotSupported      = StatusCode(505) // 505 HTTP Version Not Supported
+    StatusVariantAlsoNegotiates        = StatusCode(506) // 506 Variant Also Negotiates
+    StatusInsufficientStorage          = StatusCode(507) // 507 Insufficient Storage
+    StatusLoopDetected                 = StatusCode(508) // 508 Loop Detected
+    StatusNotExtended                  = StatusCode(510) // 510 Not Extended
