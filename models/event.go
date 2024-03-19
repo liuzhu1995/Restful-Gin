@@ -24,10 +24,11 @@ func (e *Event) Save() error {
 	query := `
 		INSERT INTO events (name, description, location, dateTime, user_id) 
 		VALUES (?, ?, ?, ?, ?)`
+	// DB.Prepare 方法用于准备SQL语句，并返回一个 *sql.Stmt 对象，该对象代表了一个预编译的SQL语句	
 	stmt, err := db.DB.Prepare(query)
 
 	if err != nil {
-		return fmt.Errorf("准备插入语句失败:%w",err)
+		return fmt.Errorf("预编译SQL语句失败:%w",err)
 	}
 	defer stmt.Close()
 
@@ -56,8 +57,11 @@ func GetAllEvents() ([]Event, error) {
 	defer rows.Close()
 
 	var events []Event
+	// for rows.Next() 循环用于迭代查询结果集中的每一行
 	for rows.Next() {
+		// 对于每一行创建一个新的结构体实例event
 		var event Event
+		// 使用 rows.Scan() 方法将该行的数据填充到结构体的字段中
 		 err := rows.Scan(
 			&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime,&event.UserID,
 		)
@@ -71,13 +75,38 @@ func GetAllEvents() ([]Event, error) {
 
 func GetEventByID(id int64)(*Event, error) {
 	query := "SELECT * FROM events WHERE id = ?"
-	row := db.DB.QueryRow(query, id)
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return nil, fmt.Errorf("预编译SQL语句失败:%v", err)
+	}
+	defer stmt.Close()
+	row := stmt.QueryRow(id)
 	var event Event
-	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+	// 使用 Scan 方法，将每行数据填充到 event 变量中
+	err = row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
 
 	if err != nil {
-		return &Event{}, err
+		fmt.Println(err)
+		return nil, err
 	}
 
 	return &event, nil
+}
+
+func (e *Event)PutEventByID(id int64) error {
+	query := "UPDATE events SET name = ?,description = ?,location = ?,dateTime = ?,user_id = ? WHERE id = ?"
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	result, err := stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserID, id)
+
+	if err != nil {
+		return fmt.Errorf("更新数据失败:%w", err)
+	}
+	 fmt.Println(result, "result")
+
+	return nil
+
 }

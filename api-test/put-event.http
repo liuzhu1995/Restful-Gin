@@ -1,0 +1,9 @@
+PUT http://localhost:8080/events/3
+Content-Type: "application/json"
+
+{
+    "name": "Bret",
+    "description": "Multi-layered client-server neural-net",
+    "location":"harness real-time e-markets",
+    "dateTime": "2024-03-19T20:07:00.000Z"
+}
