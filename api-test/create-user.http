@@ -1,0 +1,7 @@
+post http://localhost:8080/singnup
+Content-Type: "application/json"
+
+{
+    "email": "Shanna@melissa.tv",
+    "password": "123456"
+}

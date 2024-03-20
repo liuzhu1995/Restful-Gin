@@ -47,7 +47,6 @@ func (e *Event) Save() error {
 }
 
 func GetAllEvents() ([]Event, error) {
-	
 	query := "SELECT * FROM events"
 	rows, err := db.DB.Query(query)
 
@@ -93,20 +92,34 @@ func GetEventByID(id int64)(*Event, error) {
 	return &event, nil
 }
 
-func (e *Event)PutEventByID(id int64) error {
-	query := "UPDATE events SET name = ?,description = ?,location = ?,dateTime = ?,user_id = ? WHERE id = ?"
+func (e Event)UpdateEvent() error {
+	query := `UPDATE events 
+		SET name = ?,description = ?,location = ?,dateTime = ?
+		WHERE id = ?`
 	stmt, err := db.DB.Prepare(query)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	result, err := stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserID, id)
+	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.ID)
 
 	if err != nil {
 		return fmt.Errorf("更新数据失败:%w", err)
 	}
-	 fmt.Println(result, "result")
-
+	
 	return nil
+}
 
+
+func (e Event)DeleteEvent() error {
+	query := "DELETE FROM events where id = ?"
+
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return fmt.Errorf("SQL语句预编译失败:%v", err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.ID)
+	return err
 }
