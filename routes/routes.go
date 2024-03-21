@@ -12,8 +12,8 @@ func RegisterRoutes(server *gin.Engine) {
 	server.POST("/events", createEvent)
 	server.PUT("/events/:id", updateEvent)
 	server.DELETE("/events/:id", deleteEvent)
-	server.POST("/singnup", createUser)
-	server.POST("/login")
+	server.POST("/singnup", singnup)
+	server.POST("/login", login)
 	server.POST("/events/:id/register", func(c *gin.Context) {
 		id := c.Param("id")
 		fmt.Println(id)
@@ -24,4 +24,5 @@ func RegisterRoutes(server *gin.Engine) {
 	})
 
 	server.GET("/users", getUsers)
+	server.DELETE("/users/:userID", deleteUser)
 }
