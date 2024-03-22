@@ -1,10 +1,10 @@
 POST http://localhost:8080/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkthcmxleV9EYWNoQGphc3Blci5pbmZvIiwiZXhwIjoxNzExMDI3NjQ3LCJ1c2VySWQiOjJ9.-2I-1AUK6nhin-eOHU9-SdbNpZFuEBMxAt9mshHa_rc
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkthcmxleV9EYWNoQGphc3Blci5jb20iLCJleHAiOjE3MTExMTE3NDksInVzZXJJZCI6Mn0.vMkUmIfVkvl8kST3RN20Ka-zQtojwbOKbVYcvzKH-aA
 
 {
-    "name": "Test event",
-    "description": "A test event",
+    "name": "Glenna Reichert",
+    "description": "Configurable multimedia task-force",
     "location":"A test location",
-    "dateTime": "2024-03-18T16:07:00.000Z"
+    "dateTime": "2024-03-22T18:49:00.000Z"
 }

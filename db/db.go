@@ -28,6 +28,12 @@ func InitDB() {
 
 
 func createTables() {
+	// 启用外键约束
+	_, err := DB.Exec("PRAGMA foreign_keys = ON;")
+
+	if err != nil {
+		panic(fmt.Errorf("启用外键约束失败:%w", err))
+	}
 
 
 	/**	
@@ -55,7 +61,7 @@ func createTables() {
 			password TEXT NOT NULL
 		)
 	`
-	_, err := DB.Exec(createUsersTable)
+	_, err = DB.Exec(createUsersTable)
 
 	if err != nil {
 		panic(fmt.Errorf("创建users表失败:%w", err))

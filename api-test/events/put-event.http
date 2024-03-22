@@ -1,9 +1,10 @@
-PUT http://localhost:8080/events/2
-Content-Type: "application/json"
+PUT http://localhost:8080/events/5
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkthcmxleV9EYWNoQGphc3Blci5pbmZvIiwiZXhwIjoxNzExMTEwNjA1LCJ1c2VySWQiOjF9.KH61fP_qYQtlVG3YJjcJXiHbNB9eUiTLkEeKoZe26Bc
 
 {
     "name": "Bret",
     "description": "Multi-layered client-server neural-net",
     "location":"harness real-time e-markets",
-    "dateTime": "2024-03-20T15:29:00.000Z",
+    "dateTime": "2024-03-20T15:29:00.00Z"
 }

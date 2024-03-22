@@ -22,6 +22,7 @@ func GenerateToken(email string, userId int64) (string, error) {
 		第一个参数是 JWT 的签名算法（比如 jwt.SigningMethodHS256，jwt.SigningMethodRS256 等）。这个算法决定了如何对 JWT 的负载（payload）进行签名，以确保其完整性和发送者的身份
 		第二个参数是 JWT 的负载（payload），通常是一个 jwt.MapClaims 或 jwt.StandardClaims 实例，包含了关于 JWT 的元数据和自定义声明
 	*/
+	 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": email,
 		"userId": userId,
@@ -30,10 +31,11 @@ func GenerateToken(email string, userId int64) (string, error) {
 	//SignedString(): 对JWT进行签名，并返回签名后的 JWT 字符串。需要提供一个密钥secretKey（通常是一个字节数组 []byte）
 	return token.SignedString([]byte(secretKey))
 }
-
-func VerifyToken(tokenString  string) error {
+var parsedToken *jwt.Token
+func VerifyToken(tokenString  string) (int64, error) {
+	var err error
 	// 解析JWT
-	parsedToken, err := jwt.ParseWithClaims(tokenString, jwt.MapClaims{}, func(token *jwt.Token) (interface{}, error) {
+	parsedToken, err = jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		/* token.Method.(*jwt.SigningMethodHMAC) 这个类型断言的作用是检查 token.Method 是否可以被断言为 *jwt.SigningMethodHMAC 类型
 				在JWT（JSON Web Tokens）的上下文中，token.Method 通常是一个接口，表示JWT的签名算法。JWT库提供了多种签名算法的实现，
 			包括HMAC（基于哈希的消息认证码）和RSA等。*jwt.SigningMethodHMAC 是 jwt.SigningMethod 接口的一个具体实现，用于HMAC签名算法
@@ -49,25 +51,24 @@ func VerifyToken(tokenString  string) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("unable to parse token%v", err)
+		return 0, fmt.Errorf("unable to parse token%v", err)
 	}
 
-	if !parsedToken.Valid  {
+	tokenValid := parsedToken.Valid
+
+	if !tokenValid  {
 		// 如果 token 无效，返回错误
-		return errors.New("invalid token")
+		return 0, errors.New("invalid token")
 	}
-	// // 将Claims字段断言为jwt.MapClaims类型
-	// claims, ok := parsedToken.Claims.(jwt.MapClaims)
+	// 将Claims字段断言为jwt.MapClaims类型
+	claims, ok := parsedToken.Claims.(jwt.MapClaims)
  
-	// // 从负载claims中提取email和userId
-	// if !ok {
-	// 	// .(string) 检查是否是字符串
-	// 	email := claims["email"].(string)
-	// 	userId := claims["userId"].(int64)
-	// 	fmt.Printf("email:%v, userId:%v\n", email, userId)
-	// }
-
-	return nil
+	// 从负载claims中提取email和userId
+	if !ok {
+		return 0, errors.New("invalid token claims")
+	}
+	// .(string) 检查是否是字符串
+	// email := claims["email"].(string)
+	userId := int64(claims["userId"].(float64))
+	return userId, nil
 }
-
- 

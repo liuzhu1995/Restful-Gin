@@ -13,7 +13,7 @@ type Event struct {
 	Description string`binding:"required"`
 	Location    string`binding:"required"`
 	DateTime    time.Time`binding:"required"`
-	UserID int
+	UserID int64
 }
 
 
@@ -31,7 +31,7 @@ func (e *Event) Save() error {
 		return fmt.Errorf("预编译SQL语句失败:%w",err)
 	}
 	defer stmt.Close()
-
+ 
 	// 插入数据
 	result,err := stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserID)
 	if err != nil {
@@ -93,6 +93,7 @@ func GetEventByID(id int64)(*Event, error) {
 }
 
 func (e Event)UpdateEvent() error {
+	fmt.Printf("%+v\n", e)
 	query := `UPDATE events 
 		SET name = ?,description = ?,location = ?,dateTime = ?
 		WHERE id = ?`

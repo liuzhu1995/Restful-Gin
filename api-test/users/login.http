@@ -2,6 +2,6 @@ POST http://localhost:8080/login
 Content-Type: "application/json"
 
 {
-    "email": "Karley_Dach@jasper.info",
+    "email": "Karley_Dach@jasper.com",
     "password": "123456"
 }

@@ -6,13 +6,12 @@ import (
 	"strconv"
 
 	"example.com/rest-api/models"
-	"example.com/rest-api/utils"
 	"github.com/gin-gonic/gin"
 )
 
 func getEvents(context *gin.Context) {
 	events, err := models.GetAllEvents()
-	fmt.Println(err, "GetAllEvents")
+ 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error() })
 		return
@@ -21,29 +20,18 @@ func getEvents(context *gin.Context) {
 }
 
 func createEvent(context *gin.Context) {
-	tokenString := context.Request.Header.Get("Authorization")
-	fmt.Println("tokenString", tokenString)
-	if tokenString == "" {
-		context.JSON(http.StatusUnauthorized, gin.H{ "message": "Not authorization" })
-		return 
-	}
-
-	err := utils.VerifyToken(tokenString)
-
-	if err != nil {
-		context.JSON(http.StatusUnauthorized, gin.H{ "message": fmt.Sprintf("Not authorization, %v", err) })
-		return
-	}
 	var event models.Event
 	// context.ShouldBindJSON 将请求体中的 JSON 数据绑定到指定的结构体中
-	if err := context.ShouldBindJSON(&event); err != nil {
+	err := context.ShouldBindJSON(&event)
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
 		return
 	}
-
-	event.UserID = 1
+	
+	userId := context.GetInt64("userId")
+	event.UserID = userId
 	err = event.Save()
 
 	if err != nil {
@@ -61,13 +49,13 @@ func getEvent(context *gin.Context) {
 	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
 
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": fmt.Sprintf("id解析失败%v", err)})
+		context.JSON(http.StatusBadRequest, gin.H{"message": fmt.Sprintf("Could not parse id:%v", err)})
 		return
 	}
 
 	event, err := models.GetEventByID(id)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("获取数据失败:%v", err.Error() )})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("Not found event by id:%v", err.Error() )})
 		return
 	}
 
@@ -79,28 +67,35 @@ func getEvent(context *gin.Context) {
 }
 
 func updateEvent(context *gin.Context) {
-	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
 
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error() })
 		return
 	}
 
-	_, err = models.GetEventByID(id)
+	event, err := models.GetEventByID(eventId)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("此id不存在:%v", err) })
+		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("Not found event by id:%v", err) })
 		return
 	}
 
-	var event models.Event
-	if err = context.ShouldBindJSON(&event); err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("数据格式不匹配:%v", err) })
+	// 验证userId只能由创建者更新
+	userId := context.GetInt64("userId")
+	if event.UserID != userId {
+		context.JSON(http.StatusNonAuthoritativeInfo, gin.H{ "message": "Not authorized to update event" })
+		return 
+	}
+	
+
+	var updatedEvent models.Event
+	if err = context.ShouldBindJSON(&updatedEvent); err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"message": fmt.Sprintf("Could not parse request data:%v", err) })
 		return
 	}
 
-	event.ID = id
- 
-	err = event.UpdateEvent()
+	updatedEvent.ID = eventId
+	err = updatedEvent.UpdateEvent()
 
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error() })
@@ -111,15 +106,20 @@ func updateEvent(context *gin.Context) {
 }
 
 func deleteEvent(context *gin.Context) {
-	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	eventId, err := strconv.ParseInt(context.Param("id"), 10, 64)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error() })
+		context.JSON(http.StatusBadRequest, gin.H{"message": fmt.Sprintf("Not found event by id:%v", err) })
 		return
 	}
 
-	event, err := models.GetEventByID(id)
+	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": err.Error() })
+		return
+	}
+	userId := context.GetInt64("userId")
+	if event.UserID != userId {
+		context.JSON(http.StatusNonAuthoritativeInfo, gin.H{ "message": "Not authorized to delete event" })
 		return
 	}
 
