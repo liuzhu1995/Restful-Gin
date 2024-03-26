@@ -1,6 +1,6 @@
 POST http://localhost:8080/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkthcmxleV9EYWNoQGphc3Blci5jb20iLCJleHAiOjE3MTExMTE3NDksInVzZXJJZCI6Mn0.vMkUmIfVkvl8kST3RN20Ka-zQtojwbOKbVYcvzKH-aA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkthcmxleV9EYWNoQGphc3Blci5jb20iLCJleHAiOjE3MTE0Mjk2NzksInVzZXJJZCI6MX0.RoFdIJY0WGsMt7fVU6JDu9ON4sixzigLNbyLzhXOw1E
 
 {
     "name": "Glenna Reichert",

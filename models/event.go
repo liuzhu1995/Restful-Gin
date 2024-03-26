@@ -16,6 +16,11 @@ type Event struct {
 	UserID int64
 }
 
+type Register struct {
+	ID int64`json:"id"`
+	EventID int64`json:"eventId"`
+	UserID int64`json:"userId"`
+}
 
 func (e *Event) Save() error {
 	// 添加到数据库
@@ -103,12 +108,8 @@ func (e Event)UpdateEvent() error {
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(e.Name, e.Description, e.Location, e.DateTime, e.ID)
-
-	if err != nil {
-		return fmt.Errorf("更新数据失败:%w", err)
-	}
-	
-	return nil
+	 
+	return err
 }
 
 
@@ -122,5 +123,61 @@ func (e Event)DeleteEvent() error {
 	defer stmt.Close()
 
 	_, err = stmt.Exec(e.ID)
+	return err
+}
+
+func (e Event) Register(userId int64) error {
+	query := "INSERT INTO registrations (event_id, user_id) VALUES (?, ?)"
+
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		return fmt.Errorf("预编译语句失败:%v", err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.ID, userId)
+	
+	return err
+
+}
+
+func GetAllRegisters() ([]Register, error) {
+	query := "SELECT * FROM registrations"
+	rows, err := db.DB.Query(query)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var registers []Register
+	for rows.Next() {
+		var register Register
+
+		err := rows.Scan(&register.ID, &register.EventID, &register.UserID)
+		if err != nil {
+			return nil, err
+		}
+		registers = append(registers, register)
+	}
+
+	return registers, nil
+}
+
+
+func (e Event) CancelRegister(userId int64) error {
+	query := "DELETE FROM registrations WHERE event_id = ? AND user_id = ?"
+
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.ID, userId)
+
 	return err
 }

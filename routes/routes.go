@@ -1,8 +1,6 @@
 package routes
 
 import (
-	"fmt"
-
 	"example.com/rest-api/middlewares"
 	"github.com/gin-gonic/gin"
 )
@@ -17,19 +15,14 @@ func RegisterRoutes(server *gin.Engine) {
 	authenticated.POST("/events", createEvent)
 	authenticated.PUT("/events/:id", updateEvent)
 	authenticated.DELETE("/events/:id", deleteEvent)
+	authenticated.POST("/events/:id/register", registerForEvent)
+	authenticated.DELETE("/events/:id/register", cancelRegister)
+	authenticated.GET("/events/registers", getRegisterAll)
 
 
 	server.POST("/singnup", singnup)
 	server.POST("/login", login)
-	server.POST("/events/:id/register", func(c *gin.Context) {
-		id := c.Param("id")
-		fmt.Println(id)
-	})
-	server.DELETE("/events/:id/register", func(c *gin.Context) {
-		id := c.Param("id")
-		fmt.Println(id)
-	})
-
+	 
 	server.GET("/users", getUsers)
 	server.DELETE("/users/:userID", deleteUser)
 }
